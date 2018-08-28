@@ -2,7 +2,7 @@ import vk_api
 import data
 import time
 import json
-
+import datetime
 
 vk = vk_api.VkApi(token=data.key)
 
@@ -30,10 +30,8 @@ keyboard = {
     "one_time": True,
     "buttons": [
         [
-            get_button(label="Кнопка 1", color="positive"),
-            get_button(label="Кнопка 2", color="negative"),
-            get_button(label="Кнопка 3", color="primary"),
-            get_button(label="Кнопка 4", color="default"),
+            get_button(label="Время", color="positive"),
+            get_button(label="Дата", color="negative")
         ]
     ]
 }
@@ -48,10 +46,18 @@ while True:
     if messages["count"] >= 1:
         user_id = messages["items"][0]["last_message"]["from_id"]
         body = messages["items"][0]["last_message"]["text"]
-        if body.lower() == "привет":
-            send_msg(user_id, "Здарова")
+        text = ""
+        if body.lower() == "клавиатура":
+            send_keyboard(user_id, "Выберите нужный вариант", keyboard)
+        elif body.lower() == "время":
+            now = datetime.datetime.now()
+            text = "Текущее время: "+now.strftime("%H:%M")
+        elif body.lower() == "дата":
+            now = datetime.datetime.now()
+            text = "Текущая дата: " + now.strftime("%d-%m-%Y")
         else:
-            send_msg(user_id, "Я тебя не понял")
+            text = "Я тебя не понял";
+        send_msg(user_id, text)
     time.sleep(1)
 
 
